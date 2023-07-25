@@ -8,6 +8,9 @@ else
     RUNTIME="--runtime=nvidia"
 fi
 
+# tmp fix
+RUNTIME="--gpus all"
+
 docker run \
     -it --rm \
     --volume=$(pwd)/autoware-contents:/home/autoware/autoware-contents:ro \

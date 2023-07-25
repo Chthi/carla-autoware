@@ -24,9 +24,19 @@ RUN echo "export PYTHON2_EGG=$(ls /home/autoware/PythonAPI | grep py2.)" >> .bas
 # the latest ros-melodic-ackermann-msgs and ros-melodic-derived-objects-msgs packages. As a
 # workaround we use a snapshot of the ROS apt repository to install an older version of the required
 # packages. 
-RUN sudo rm -f /etc/apt/sources.list.d/ros1-latest.list
-RUN sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key 4B63CF8FDE49746E98FA01DDAD19BAB3CBF125EA
-RUN sudo sh -c 'echo "deb http://snapshots.ros.org/melodic/2020-08-07/ubuntu $(lsb_release -sc) main" >> /etc/apt/sources.list.d/ros-snapshots.list'
+
+# RUN sudo rm -f /etc/apt/sources.list.d/ros1-latest.list
+# RUN sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key 4B63CF8FDE49746E98FA01DDAD19BAB3CBF125EA
+# RUN sudo sh -c 'echo "deb http://snapshots.ros.org/melodic/2020-08-07/ubuntu $(lsb_release -sc) main" >> /etc/apt/sources.list.d/ros-snapshots.list'
+
+# ERROR : "The following signatures couldn't be verified because the public key is not available: NO_PUBKEY A4B469963BF863CC"
+# src : https://askubuntu.com/questions/13065/how-do-i-fix-the-gpg-error-no-pubkey
+RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A4B469963BF863CC
+
+# ERROR : "The following signatures were invalid: EXPKEYSIG F42ED6FBAB17C654 Open Robotics <info@osrfoundation.org>"
+# src : https://answers.ros.org/question/379190/apt-update-signatures-were-invalid-f42ed6fbab17c654/
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+
 RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \
         python-pip \
         python-wheel \
